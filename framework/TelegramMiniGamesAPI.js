@@ -72,6 +72,86 @@ class TelegramMiniGamesAPI {
     setBackgroundColor(color) {
         this.tg.setBackgroundColor(color);
     }
+
+    // Telegram star pay
+    requestPayment(amount, currency = 'USD') {
+        return new Promise((resolve, reject) => {
+            if (!this.payments) {
+                reject(new Error('Payments are not available'));
+                return;
+            }
+
+            this.payments.requestPayment({
+                amount: amount,
+                currency: currency,
+                payload: 'game_purchase'
+            }, (success, paymentResult) => {
+                if (success) {
+                    resolve(paymentResult);
+                } else {
+                    reject(new Error('Payment failed'));
+                }
+            });
+        });
+    }
+
+    // connect the wallet
+    connectWallet() {
+        return new Promise((resolve, reject) => {
+            if (!this.tg.connectWallet) {
+                reject(new Error('Wallet connection is not available'));
+                return;
+            }
+
+            this.tg.connectWallet((success, walletData) => {
+                if (success) {
+                    resolve(walletData);
+                } else {
+                    reject(new Error('Wallet connection failed'));
+                }
+            });
+        });
+    }
+
+    // get the wallet info
+    getWalletInfo() {
+        return new Promise((resolve, reject) => {
+            if (!this.tg.getWalletInfo) {
+                reject(new Error('Wallet info is not available'));
+                return;
+            }
+
+            this.tg.getWalletInfo((success, walletInfo) => {
+                if (success) {
+                    resolve(walletInfo);
+                } else {
+                    reject(new Error('Failed to get wallet info'));
+                }
+            });
+        });
+    }
+
+    // start the trade
+    sendTransaction(toAddress, amount, currency) {
+        return new Promise((resolve, reject) => {
+            if (!this.tg.sendTransaction) {
+                reject(new Error('Transaction sending is not available'));
+                return;
+            }
+
+            this.tg.sendTransaction({
+                to: toAddress,
+                amount: amount,
+                currency: currency
+            }, (success, transactionResult) => {
+                if (success) {
+                    resolve(transactionResult);
+                } else {
+                    reject(new Error('Transaction failed'));
+                }
+            });
+        });
+    }
 }
 
 // example
